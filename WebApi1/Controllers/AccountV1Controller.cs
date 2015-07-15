@@ -14,7 +14,7 @@ namespace WebApi.Controllers
         [HttpGet]
         public string Ping()
         {
-            return "ping";
+            return "ping1";
         }
 
         [HttpGet]
@@ -22,7 +22,7 @@ namespace WebApi.Controllers
         [Route("secret")]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "WebApi1" };
         }
 
         // GET: api/Account/5

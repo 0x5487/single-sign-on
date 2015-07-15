@@ -433,6 +433,12 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+       
+        public string Hello()
+        {
+            return "hello1";
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

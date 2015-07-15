@@ -7,7 +7,6 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 
 [assembly: OwinStartup(typeof(WebApi.Startup))]
-
 namespace WebApi
 {
     public class Startup
@@ -29,8 +28,9 @@ namespace WebApi
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(20),
-                Provider = new SimpleAuthorizationServerProvider()
+                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(60),
+                Provider = new SimpleAuthorizationServerProvider(),
+
             };
 
             // Token Generation
@@ -58,8 +58,8 @@ namespace WebApi
             if (context.UserName == "jason" && context.Password == "123123")
             {
                 var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                identity.AddClaim(new Claim("sub", context.UserName));
-                identity.AddClaim(new Claim("role", "user"));
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()));
+                identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
 
                 context.Validated(identity);
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -73,13 +74,42 @@ namespace WebApplication2.Controllers
                 return View(model);
             }
 
+            var result = SignInStatus.Failure;
+
+            if (model.Email == "jason@hotmail.com" && model.Password == "123123")
+            {
+                var claims = new List<Claim>();
+
+                // create required claims
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, model.Email));
+                claims.Add(new Claim(ClaimTypes.Name, "jason"));
+
+                // custom – my serialized AppUserState object
+                //claims.Add(new Claim("userState", appUserState.ToString()));
+
+                var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
+
+                AuthenticationManager.SignIn(new AuthenticationProperties()
+                {
+                    AllowRefresh = true,
+                    IsPersistent = false,
+                    ExpiresUtc = DateTime.UtcNow.AddDays(7)
+                }, identity);
+
+                result = SignInStatus.Success;
+
+            }
+
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            //var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+
+
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return Redirect(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -90,6 +120,7 @@ namespace WebApplication2.Controllers
                     return View(model);
             }
         }
+
 
         //
         // GET: /Account/VerifyCode
@@ -401,6 +432,11 @@ namespace WebApplication2.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        public string Hello()
+        {
+            return "hello2";
         }
 
         protected override void Dispose(bool disposing)
