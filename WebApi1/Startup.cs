@@ -28,9 +28,8 @@ namespace WebApi
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(60),
+                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(6000),
                 Provider = new SimpleAuthorizationServerProvider(),
-
             };
 
             // Token Generation
