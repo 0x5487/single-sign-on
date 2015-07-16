@@ -1,0 +1,44 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+</head>
+<body>
+<div>
+    Result:<span id="lblResult"></span><br/>
+    <button id="btnShow">show time!!</button>
+</div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/superagent/1.2.0/superagent.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            var request = window.superagent;
+            var result = $("#lblResult");
+
+            $("#btnShow").click(function () {
+                console.log("btnshow clicking");
+                
+                request
+                    .get('http://api.mystore.com:60315/v1/account/ping')
+                    //.set('Accept', 'application/json')
+                    .end(function (err, res) {
+                        result.text(res.body);
+                    });
+            });
+        });
+
+    </script>
+</body>
+
+
+</html>
