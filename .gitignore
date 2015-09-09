@@ -4,6 +4,7 @@ obj
 packages
 *.suo
 *.user
+.vs
 
 
 
