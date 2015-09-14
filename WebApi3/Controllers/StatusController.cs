@@ -16,6 +16,11 @@ namespace WebApi3.Controllers
         [HttpGet("")]
         public string OK()
         {
+            if (this.Context.User.Identity.IsAuthenticated)
+            {
+
+            }
+
             return "ok";
         }
 

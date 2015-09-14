@@ -1,10 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataHandler.Encoder;
+using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
+using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
+using WebApi1.Provides;
+using WebApi3.Providers;
 
 [assembly: OwinStartup(typeof(WebApi.Startup))]
 namespace WebApi
@@ -24,16 +32,23 @@ namespace WebApi
 
         public void ConfigureOAuth(IAppBuilder app)
         {
+            string privatekey = "IxrAjDoa2FqElO7IhrSrUJELhUckePEPVpaePlS_Xaw";
+
             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
             {
                 AllowInsecureHttp = true,
-                TokenEndpointPath = new PathString("/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(6000),
-                Provider = new SimpleAuthorizationServerProvider(),
+                TokenEndpointPath = new PathString("/oauth/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromHours(24),
+                Provider = new JwtOAuthProvider(),
+                AccessTokenFormat = new CustomJwtFormat(privatekey)
             };
 
-            // Token Generation
-            app.UseOAuthBearerTokens(OAuthServerOptions);
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions()
+            {
+                AccessTokenFormat = new CustomJwtFormat(privatekey),
+            });
         }
     }
 
