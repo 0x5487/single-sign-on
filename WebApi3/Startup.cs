@@ -5,7 +5,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Authentication;
-using Microsoft.AspNet.Authentication.OAuthBearer;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
@@ -16,11 +15,10 @@ namespace WebApi3
 {
     public class Startup
     {
-        private byte[] _secret;
 
         public Startup(IHostingEnvironment env)
         {
-            _secret = TextEncodings.Base64Url.Decode("IxrAjDoa2FqElO7IhrSrUJELhUckePEPVpaePlS_Xaw");
+
         }
 
         // This method gets called by a runtime.
@@ -40,12 +38,12 @@ namespace WebApi3
             // Configure the HTTP request pipeline.
             //app.UseStaticFiles();
             
-            app.UseErrorPage();
+            app.UseDeveloperExceptionPage();
 
-            app.UseOAuthBearerAuthentication(options =>
+            app.UseJwtBearerAuthentication(options =>
             {
                 options.AutomaticAuthentication = true;
-                options.SecurityTokenValidators = new List<ISecurityTokenValidator>() { new CustomJwtSecurityTokenHandler() };
+                options.SecurityTokenValidators.Add(new CustomJwtSecurityTokenHandler());
                 options.TokenValidationParameters.ValidateLifetime = false;
             });
 

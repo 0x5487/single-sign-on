@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 using Microsoft.Owin.Security;
@@ -33,12 +34,15 @@ namespace WebApi1.Provides
 
             var exp = data.Properties.ExpiresUtc.Value.ToEpochTime();
 
-            var payLoad = new Dictionary<string, string>();
-            payLoad.Add("exp", exp.ToString());
+            var payLoad = new List<KeyValuePair<string, string>>();
+            //payLoad.Add("exp", exp.ToString());
+
+            payLoad.Add(new KeyValuePair<string, string>("exp", exp.ToString()));
 
             foreach (var claim in data.Identity.Claims)
             {
-                payLoad.Add(claim.Type, claim.Value);
+                //payLoad.Add(claim.Type, claim.Value);
+                payLoad.Add(new KeyValuePair<string, string>(claim.Type, claim.Value));
             }
 
             var result = JsonWebToken.Encode(payLoad, _secretKey, JwtHashAlgorithm.HS256);
@@ -50,7 +54,7 @@ namespace WebApi1.Provides
             try
             {
                 var raw = JsonWebToken.Decode(protectedText, _secretKey);
-                var payLoad =JsonConvert.DeserializeObject<IDictionary<string, string>>(raw);
+                var payLoad =JsonConvert.DeserializeObject<List<KeyValuePair<string, string>>>(raw);
 
                 var claims = new List<Claim>();
 
@@ -60,7 +64,7 @@ namespace WebApi1.Provides
                     claims.Add(claim);
                 }
 
-                var ci = new ClaimsIdentity(claims, "JWT");
+                var ci = new ClaimsIdentity(claims, "jwt");
                 return new AuthenticationTicket(ci, new AuthenticationProperties());
             }
             catch (Exception ex)

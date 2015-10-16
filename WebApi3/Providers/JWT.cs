@@ -132,8 +132,8 @@ namespace WebApi3.Providers
             var payloadJson = Encoding.UTF8.GetString(Base64UrlDecode(payload));
 
             var dPayloadJson = AppHelper.DecryptAES(payloadJson, "EOyABeEAhKgZl8nga274jeEBqScmNmGb/AG1bmv3aOA=", "hQBAFjvbEnr3YzIQ1uMCmw==");
-            
-            var headerData = JsonConvert.DeserializeObject<Dictionary<string,object>>(headerJson);
+
+            var headerData = JsonConvert.DeserializeObject<Dictionary<string, object>>(headerJson);
 
             if (verify)
             {
@@ -144,7 +144,7 @@ namespace WebApi3.Providers
                 var signature = HashAlgorithms[GetHashAlgorithm(algorithm)](key, bytesToSign);
                 var decodedCrypto = Convert.ToBase64String(crypto);
                 var decodedSignature = Convert.ToBase64String(signature);
-                
+
                 Verify(decodedCrypto, decodedSignature, dPayloadJson);
             }
 
@@ -159,14 +159,15 @@ namespace WebApi3.Providers
             }
 
             // verify exp claim https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32#section-4.1.4
-            var payloadData = JsonConvert.DeserializeObject<Dictionary<string, object>>(payloadJson);
-            if (payloadData.ContainsKey("exp") && payloadData["exp"] != null)
+            var payloadData = JsonConvert.DeserializeObject<List<KeyValuePair<string, string>>>(payloadJson);
+            var expData = payloadData.SingleOrDefault(a => a.Key == "exp").Value;
+            if (!string.IsNullOrWhiteSpace(expData))
             {
                 // safely unpack a boxed int 
                 int exp;
                 try
                 {
-                    exp = Convert.ToInt32(payloadData["exp"]);
+                    exp = Convert.ToInt32(expData);
                 }
                 catch (Exception)
                 {

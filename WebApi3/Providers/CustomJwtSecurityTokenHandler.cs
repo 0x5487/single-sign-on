@@ -28,7 +28,7 @@ namespace WebApi3.Providers
             {
                 var raw = JsonWebToken.Decode(securityToken, key);
 
-                var payLoad = JsonConvert.DeserializeObject<IDictionary<string, string>>(raw);
+                var payLoad = JsonConvert.DeserializeObject<List<KeyValuePair<string, string>>>(raw);
 
                 var claims = new List<Claim>();
 
@@ -38,7 +38,7 @@ namespace WebApi3.Providers
                     claims.Add(claim);
                 }
 
-                var claimsIdentity = new ClaimsIdentity(claims, "JWT");
+                var claimsIdentity = new ClaimsIdentity(claims, "jwt");
 
                 return new ClaimsPrincipal(claimsIdentity);
             }

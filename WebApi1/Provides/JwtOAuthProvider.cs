@@ -28,18 +28,26 @@ namespace WebApi1.Provides
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
 
             // TODO: verify user
-
-            // issuse identity
-            var claimsIdentity = new ClaimsIdentity("JWT");
-            claimsIdentity.AddClaim(new Claim("userId", Guid.NewGuid().ToString()));
-            claimsIdentity.AddClaim(new Claim("name", "Jason Lee"));
-            claimsIdentity.AddClaim(new Claim("email", "test@test.com"));
-            claimsIdentity.AddClaim(new Claim("phone", "0123456789"));
-            claimsIdentity.AddClaim(new Claim("roles", "Manager,Supervisor"));
+            //if (context.UserName == "jason" && context.Password == "123123")
+            //{
+                // issuse identity
+                var claimsIdentity = new ClaimsIdentity("jwt");
+                claimsIdentity.AddClaim(new Claim("sid", Guid.NewGuid().ToString()));
+                claimsIdentity.AddClaim(new Claim("userId", "1"));
+                claimsIdentity.AddClaim(new Claim("name", "Jason Lee"));
+                claimsIdentity.AddClaim(new Claim("email", "test@test.com"));
+                claimsIdentity.AddClaim(new Claim("country_code", "886"));
+                claimsIdentity.AddClaim(new Claim("phone", "911234567"));
+                claimsIdentity.AddClaim(new Claim("role", "admin"));
+                claimsIdentity.AddClaim(new Claim("role", "organizer"));
 
             var ticket = new AuthenticationTicket(claimsIdentity, null);
 
-            context.Validated(ticket);
+                context.Validated(ticket);
+            //}
+
+
+
 
         }
     }

@@ -38,7 +38,7 @@ namespace WebApi
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/oauth/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromHours(24),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(90),
                 Provider = new JwtOAuthProvider(),
                 AccessTokenFormat = new CustomJwtFormat(privatekey)
             };
